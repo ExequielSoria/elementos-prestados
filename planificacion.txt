@@ -1,0 +1,192 @@
+# SISTEMA DE ARTICULOS PRESTADOS Y RESERVACIONES PARA INSTITUCIONES #
+
+Sistema en el que se puede administrar una lista de objetos los cuales son prestados a terceros.
+El programa permitiria añadir objetos, administrar a quienes son prestados, reservar objetos y recopilar la informacion sobre estas acciones.
+
+
+## FUNCIONAMIENTO ##
+El administrador de los elementos a prestar primero debe de registrarlos en el sistema. Una vez registrados, los elementos podran ser manipulados de distintas formas, como ser prestados a los usuarios y reservados entre fechas rellenando los campos minimos necesarios.
+
+### Creacion de items:
+Se deberan de registrar los items que se desean administrar, siendo capaz de cargar 2 observaciones por elemento para diferenciarse entre sus mismos tipos de objeto en el front end. (En la 'card' de cada elemento se muestran las 2 observaciones)
+
+### Informacion necesaria al crear cada elemento:
+La idea es que sea facil y rapido agregar varios objetos para los docentes, por eso la idea es que pida pocos datos obligatorios y que el sistema haga la mayoria del trabajo.
+
+### Estructura basica de los elementos ###
+- ID (Se crea automaticamente, esta id seria de uso interno, para la base de datos y las operaciones que el usuario no ve)
+- Nombre del elemento (Opcional)
+- Descripcion (Opcional)
+- Tipo de Objeto (Notebook, Proyector, Alargue, Diccionario, etc)
+- Modelo (Opcional)
+- Observacion principal (Sistema operativo, objeto dañado, etc)
+- Observacion secundaria (Escritorio remoto, faltan paginas, etc)
+- Numero Identificador (Diferente al ID, este Identificador es para los mismos elementos. Se crea de forma automatica basandose en el 'Tipo de objeto')
+- Imagen (Si no se carga una imagen, se tomara la predeterminada de su tipo de objeto) ---< Para evitar crear un sistema para las imagenes y sus tipos de objetos, puedo optar por un sistema con muchos emojis ya precargados o iconos >---
+--- Estado Actual (Esto para determinar si el elemento esta en reservado o si se encuentra en uso, sera un INT pero aca lo dejo con los nombres para mas facilidad)
+
+Este sistema es asi para facilitar el almacenamiento de varios objetos iguales que son indiferentes entre si, pero a la vez pueden tener pequeñas variaciones entre si, como varias notebooks iguales teniendo distintos sistemas operativos entre si. 
+
+***El sistema guarda distintos datos, pero la mayoria son opcionales para agilizar los registros para quien lo desee***
+
+### ELEMENTOS DE EJEMPLO:
+
+> Elemento 1
+
+- ID ---> 1
+- Nombre ---> Notebook Lenovo
+- Descripcion ---> 16GB de ram, SSD 500 GB, amd ...
+- Tipo de objeto ---> Notebook
+- Modelo ---> Lenovo Thinkpad P14S
+- Observacion Principal ---> Ubuntu 22.4.04 lts
+- Observacion Secundaria ---> TeamViewer
+- Numero Identificador ---> 1
+- Imagen de referencia ---> Icono de notebook (?)
+- Estado ---> Disponible
+
+> Elemento 2
+
+- ID ---> 2
+- Nombre ---> Notebook Lenovo
+- Descripcion ---> 16GB de ram, SSD 500 GB, amd ...
+- Tipo de objeto ---> Notebook
+- Modelo ---> Lenovo Thinkpad P14S
+- Observacion Principal ---> Windows 11
+- Observacion Secundaria ---> Anydesk
+- Numero Identificador ---> 2
+- Imagen de referencia ---> Icono de notebook (?)
+- Estado ---> Reservado
+
+> Elemento 3
+
+
+- ID ---> 3
+- Nombre ---> Notebook Lenovo
+- Descripcion ---> 16GB de ram, SSD 500 GB, amd ...
+- Tipo de objeto ---> Notebook
+- Modelo ---> Lenovo Thinkpad P14S
+- Observacion Principal ---> Windows 10
+- Observacion Secundaria ---> TeamViewer
+- Numero Identificador ---> 3
+- Imagen de referencia ---> Icono de notebook (?)
+- Estado ---> En uso
+
+> Elemento 4
+
+
+- ID ---> 4
+- Nombre ---> Diccionario Oceano Pocket
+- Descripcion ---> Ingles español - English Spanish
+- Tipo de objeto ---> Diccionario Ingles - Español
+- Modelo ---> Oceano Pocket
+- Observacion Principal ---> Faltan paginas
+- Observacion Secundaria ---> (Vacio)
+- Numero Identificador ---> 1
+- Imagen de referencia ---> Icono de Libro (?)
+- Estado ---> Reservado
+
+> Elemento 5
+
+
+- ID ---> 5
+- Nombre ---> Diccionario Oceano Pocket
+- Descripcion ---> Ingles español - English Spanish
+- Tipo de objeto ---> Diccionario Ingles - Español
+- Modelo ---> Oceano Pocket
+- Observacion Principal ---> (Vacio)
+- Observacion Secundaria ---> (Vacio)
+- Numero Identificador ---> 2
+- Imagen de referencia ---> Icono de Libro (?)
+- Estado ---> Reservado
+
+> Elemento 6
+
+
+- ID ---> 6
+- Nombre ---> Zapatilla Blanca
+- Descripcion ---> Zapatilla de 6 enchufes
+- Tipo de objeto ---> Enchufe
+- Modelo ---> (Vacio)
+- Observacion Principal ---> (Vacio)
+- Observacion Secundaria ---> (Vacio)
+- Numero Identificador ---> 1
+- Imagen de referencia ---> Icono de Rayito (?)
+- Estado ---> Disponible
+
+
+### Crear Prestamo:
+El preceptor es capaz de crear un nuevo "prestamo", el cual le pide como datos obligatorios el LEGAJO y Nombre del alumno y seleccionar los items. El sistema automaticamente guarda la fecha y hora. Al crearse un prestamo se altera el estado del elemento y se guarda la accion realizada en la tabla de acciones. 
+
+> A nivel interno, el prestamo tambien dispone de 2 fechas, como si fuera una reservacion, esto para que los datos almacenados sean iguales. Esto no deberia de afectar el sistema para nada, ya que solo dispondria de un dato el cual no se utiliza, ademas de que predeterminadamente la hora fin debera ser igual que la hora inicio o sino dejarlo en null simplemente, esto creo que da igual.
+
+### Devolucion:
+Al devolver el elemento, se altera el estado actual del elemento y se guarda la fecha y hora junto con la accion realizada en una tabla aparte.
+
+### Crear Reservacion:
+El usuario ingresa la fecha y los elementos que desea reservar y estos no estaran disponibles para su prestamo durante el tiempo establecido. 
+
+### Recuperacion de informacion:
+El sistema es capaz de mostrar una lista de los alumnos que recibieron objetos por orden de registro siendo posible filtrar por fechas especificas
+
+> **OPCIONAL --->** El sistema creara de forma periodica y automatica los archivos pdf's, se podra elegir la frecuencia de creacion basada en dias (Cada X dias) predeterminado '15' y estos se guardaran localmente. Esto es opcional ya que el sistema seria capaz de mostrar la informacion de los registros, pero la opcion del pdf esta por si alguna institucion necesita PRESENTAR estos datos.
+
+### Guardado de Acciones:
+Habra una tabla aparte la cual guarde las acciones realizadas sobre los objetos, las acciones estan determinadas por id's
+
+- ID de la accion (Dato interno para la base de datos para identificar cada accion al recuperarla)
+- ID del elemento sobre el cual se realiza la accion
+- Accion (Prestamo, Devolucion, Reservacion)
+- Fecha y hora Inicio
+- Fecha y hora Fin
+- Alumno (Quien realizo la accion) Deberia ser la id del alumno, pero para simplificar aca ponemos nombre
+
+### ACCIONES DE EJEMPLO:
+
+> Accion 1
+
+- ID ---> 01
+- ID del elemento ---> 21 (Diccionario)
+- Accion ---> Prestamo
+- Fecha Inicio ---> 16/03/2025
+- Fecha Fin ---> 16/03/2025
+- Alumno ---> Soria Exequiel
+
+> Accion 2
+
+- ID ---> 02
+- ID del elemento ---> 12
+- Accion ---> Reservacion
+- Fecha Inicio ---> 24/03/2025
+- Fecha Fin ---> 28/03/2025
+- Alumno ---> Sierra Gonzalo
+
+> Accion 3
+- ID ---> 03
+- ID del elemento ---> 21 (Diccionario)
+- Accion ---> Devolucion
+- Fecha Inicio ---> 16/03/2025
+- Fecha Fin ---> 16/03/2025
+- Alumno ---> Soria Exequiel
+
+### Crear usuario/alumno:
+Habria una pestaña encargada de la carga de usuarios o alumnos, esto solo los añade a una lista para agilizar el registro de cada prestamo nuevo, evidentemente son editables.
+
+Datos de cada Usuario:
+- ID (Dato interno para la base de datos)
+- Nombre (Opcional)
+- Apellido (Opcional)
+- Identificador/Legajo (Obligatorio)
+- Año cursando (Opcional)
+- DNI (Opcional)
+
+USUARIO DE EJEMPLO:
+- ID ---> 01
+- Nombre ---> Exequiel
+- Apellido ---> Soria
+- Identificador/Legajo ---> 1004A
+- Año cursando ---> 3
+- DNI ---> 43915927
+
+
+### Facilidades del programa:
+Los usuarios se van registrando a medida que se van haciendo prestaciones. A la hora de prestar un objeto a un alumno por segunda vez, sus datos se autocompletaran. (Esto para ser un sistema aislado y no dependiente de otro sistema) con el paso del tiempo, el sistema sera mas comodo y agil que el sistema en papel que se suele usar actualmente, teniendo la facilidad de generar registros de forma casi automatica.
